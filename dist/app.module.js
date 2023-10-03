@@ -11,14 +11,13 @@ const common_1 = require("@nestjs/common");
 const auth_module_1 = require("./auth/auth.module");
 const user_module_1 = require("./user/user.module");
 const event_module_1 = require("./event/event.module");
+const prisma_module_1 = require("./prisma/prisma.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, user_module_1.UserModule, event_module_1.EventModule],
-        controllers: [],
-        providers: [],
+        imports: [auth_module_1.AuthModule, user_module_1.UserModule, event_module_1.EventModule, prisma_module_1.PrismaModule],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
