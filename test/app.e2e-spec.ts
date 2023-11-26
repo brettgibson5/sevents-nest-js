@@ -4,7 +4,8 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { PrismaService } from '../src/prisma/prisma.service';
 import * as pactum from 'pactum';
 import { AuthDto } from '../src/auth/dto';
-import { EditUserDto } from 'src/user/dto';
+import { EditUserDto } from '../src/user/dto';
+import { CreateEventDto, EditEventDto } from 'src/event/dto';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -129,10 +130,102 @@ describe('App e2e', () => {
     });
   });
   describe('Events', () => {
-    describe('Create events', () => {});
-    describe('Get events', () => {});
-    describe('Get event', () => {});
-    describe('Edit event', () => {});
-    describe('Delete event', () => {});
+    describe('Get empty events', () => {
+      it('should get events', () => {
+        return pactum
+          .spec()
+          .get('/events')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectBody([]);
+      });
+    });
+    describe('Create events', () => {
+      it('should create event', () => {
+        const dto: CreateEventDto = {
+          title: 'First event',
+          link: 'https://google.com',
+        };
+        return pactum
+          .spec()
+          .post('/events')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(dto)
+          .expectStatus(201)
+          .stores('eventId', 'id');
+      });
+    });
+    describe('Get events', () => {
+      it('should get 1 event', () => {
+        return pactum
+          .spec()
+          .get('/events')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectJsonLength(1);
+      });
+    });
+    describe('Get event', () => {
+      it('should get event of specific id', () => {
+        return pactum
+          .spec()
+          .get('/events/{id}')
+          .withPathParams('id', '$S{eventId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectBodyContains('$S{eventId}');
+      });
+    });
+    describe('Edit event', () => {
+      it('should edit event', () => {
+        const dto: EditEventDto = {
+          title: 'Test title123',
+          description: 'hello description',
+        };
+        return pactum
+          .spec()
+          .patch('/events/{id}')
+          .withPathParams('id', '$S{eventId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(dto)
+          .expectStatus(200)
+          .expectBodyContains(dto.title)
+          .expectBodyContains(dto.description);
+      });
+    });
+    describe('Delete event', () => {
+      it('should delete event', () => {
+        return pactum
+          .spec()
+          .delete('/events/{id}')
+          .withPathParams('id', '$S{eventId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(204);
+      });
+    });
+    describe('Get empty events', () => {
+      it('should get events', () => {
+        return pactum
+          .spec()
+          .get('/events')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectJsonLength(0);
+      });
+    });
   });
 });

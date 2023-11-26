@@ -1,4 +1,68 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { CreateEventDto, EditEventDto } from './dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
-export class EventService {}
+export class EventService {
+  constructor(private prisma: PrismaService) {}
+  getEvents(userId: number) {
+    return this.prisma.event.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
+
+  getEventById(userId: number, eventId: number) {
+    return this.prisma.event.findFirst({
+      where: {
+        id: eventId,
+        userId,
+      },
+    });
+  }
+
+  async createEvent(userId: number, dto: CreateEventDto) {
+    const event = await this.prisma.event.create({
+      data: {
+        userId,
+        ...dto,
+      },
+    });
+
+    return event;
+  }
+
+  async editEventById(userId: number, eventId: number, dto: EditEventDto) {
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event || event.userId !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
+    return this.prisma.event.update({
+      where: {
+        id: eventId,
+      },
+      data: { ...dto },
+    });
+  }
+
+  async deleteEventById(userId: number, eventId: number) {
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event || event.userId !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
+    await this.prisma.event.delete({
+      where: {
+        id: eventId,
+      },
+    });
+  }
+}
