@@ -6,40 +6,36 @@ import { PrismaService } from '../prisma/prisma.service';
 export class EventService {
   constructor(private prisma: PrismaService) {}
   getEvents(userId: number) {
-    return this.prisma.event.findMany({
-      where: {
-        userId,
-      },
-    });
+    console.log(userId);
+    return this.prisma.event.findMany({});
   }
 
   getEventById(userId: number, eventId: number) {
+    console.log(userId);
     return this.prisma.event.findFirst({
       where: {
         id: eventId,
-        userId,
       },
     });
   }
 
   async createEvent(userId: number, dto: CreateEventDto) {
+    console.log(userId);
     const event = await this.prisma.event.create({
-      data: {
-        userId,
-        ...dto,
-      },
+      data: { ...dto },
     });
 
     return event;
   }
 
   async editEventById(userId: number, eventId: number, dto: EditEventDto) {
+    console.log(userId);
     const event = await this.prisma.event.findUnique({
       where: {
         id: eventId,
       },
     });
-    if (!event || event.userId !== userId) {
+    if (!event) {
       throw new ForbiddenException('Access denied');
     }
     return this.prisma.event.update({
@@ -51,12 +47,13 @@ export class EventService {
   }
 
   async deleteEventById(userId: number, eventId: number) {
+    console.log(userId);
     const event = await this.prisma.event.findUnique({
       where: {
         id: eventId,
       },
     });
-    if (!event || event.userId !== userId) {
+    if (!event) {
       throw new ForbiddenException('Access denied');
     }
     await this.prisma.event.delete({

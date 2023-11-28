@@ -5,21 +5,23 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Role } from './enum/role.enum';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prismaService: PrismaService,
+    private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
   async signup(dto: AuthDto) {
     const hash = await argon.hash(dto.password);
     try {
-      const user = await this.prismaService.user.create({
+      const user = await this.prisma.user.create({
         data: {
           email: dto.email,
           hash,
+          role: Role.User,
         },
       });
       return this.signToken(user.id, user.email);
@@ -35,7 +37,7 @@ export class AuthService {
 
   async signin(dto: AuthDto) {
     // find user by email
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       },

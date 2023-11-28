@@ -10,31 +10,168 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   email     String  @unique
+//   hash      String
+//   firstName String?
+//   lastName  String?
+
+//   userEvents UserEvent[]
+
+//   @@map("users")
+// }
+
+// model Event {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   title       String
+//   description String?
+//   link        String?
+//   UserEvent   UserEvent[]
+
+//   @@map("events")
+// }
+
+// model UserEvent {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   attending Boolean
+
+//   eventId Int
+//   event   Event @relation(fields: [eventId], references: [id])
+
+//   userId Int
+//   user   User @relation(fields: [userId], references: [id])
+
+//   @@map("rsvp")
+// }
+
 model User {
   id        Int      @id @default(autoincrement())
+  username  String?  @unique @default(uuid())
+  firstName String?
+  lastName  String?
+  hash      String
+  email     String   @unique
+  role      String
+  instagram String?
+  website   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email     String  @unique
-  hash      String
-  firstName String?
-  lastName  String?
-  events    Event[]
+  rsvp UserEvent[]
+
+  UserCity  UserCity[]
+  UserPhoto UserPhoto[]
 
   @@map("users")
 }
 
+model City {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  address     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events    Event[]
+  UserCity  UserCity[]
+  CityPhoto CityPhoto[]
+
+  @@map("cities")
+}
+
 model Event {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  address     String
+  city        City      @relation(fields: [cityId], references: [id])
+  cityId      Int
+  active      Boolean
+  type        String
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  rsvp       UserEvent[]
+  EventPhoto EventPhoto[]
+
+  @@map("events")
+}
+
+model UserEvent {
   id        Int      @id @default(autoincrement())
+  attending Boolean
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String
-  description String?
-  link        String?
+  @@map("rsvp")
+}
 
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
+model UserCity {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  city      City     @relation(fields: [cityId], references: [id])
+  cityId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-  @@map("events")
+model Photo {
+  id        Int      @id @default(autoincrement())
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userPhotos  UserPhoto[]
+  eventPhotos EventPhoto[]
+  cityPhotos  CityPhoto[]
+
+  @@map("photos")
+}
+
+model UserPhoto {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  photo     Photo    @relation(fields: [photoId], references: [id])
+  photoId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventPhoto {
+  id        Int      @id @default(autoincrement())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   Int
+  photo     Photo    @relation(fields: [photoId], references: [id])
+  photoId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CityPhoto {
+  id        Int      @id @default(autoincrement())
+  city      City     @relation(fields: [cityId], references: [id])
+  cityId    Int
+  photo     Photo    @relation(fields: [photoId], references: [id])
+  photoId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
