@@ -1,19 +1,12 @@
-import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsOptional,
   IsString,
   IsBoolean,
   IsDateString,
-  ValidateNested,
   IsNumber,
   IsPositive,
 } from 'class-validator';
-
-class CityDto {
-  @IsNotEmpty()
-  cityId: number;
-}
 
 export class CreateEventDto {
   @IsString()
@@ -32,9 +25,6 @@ export class CreateEventDto {
   @IsNotEmpty()
   type: string;
 
-  // @ValidateNested()
-  // @Type(() => CityDto)
-  // city: CityDto;
   @IsNumber()
   @IsPositive()
   cityId: number;

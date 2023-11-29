@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { EventModule } from './event/event.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { CityModule } from './city/city.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CityModule } from './city/city.module';
     EventModule,
     PrismaModule,
     CityModule,
+    SharedModule,
   ],
 })
 export class AppModule {}
