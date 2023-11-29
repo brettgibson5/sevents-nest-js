@@ -5,13 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class EventService {
   constructor(private prisma: PrismaService) {}
-  getEvents(userId: number) {
-    console.log(userId);
+  getEvents() {
     return this.prisma.event.findMany({});
   }
 
   getEventById(userId: number, eventId: number) {
-    console.log(userId);
     return this.prisma.event.findFirst({
       where: {
         id: eventId,
@@ -20,7 +18,6 @@ export class EventService {
   }
 
   async createEvent(userId: number, dto: CreateEventDto) {
-    console.log(userId);
     const event = await this.prisma.event.create({
       data: { ...dto },
     });
@@ -29,7 +26,6 @@ export class EventService {
   }
 
   async editEventById(userId: number, eventId: number, dto: EditEventDto) {
-    console.log(userId);
     const event = await this.prisma.event.findUnique({
       where: {
         id: eventId,
