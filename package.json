@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prisma:migrate": "prisma migrate dev",
     "prisma:dev:deploy": "prisma migrate deploy",
     "db:dev:rm": "docker-compose down -v",
     "db:dev:up": "docker-compose up -d",

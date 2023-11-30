@@ -19,4 +19,38 @@ export class UserService {
     delete user.hash;
     return user;
   }
+
+  async viewUser(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return user;
+  }
+
+  async addFriend(userId: number, friendId: number) {
+    const friendship = await this.prisma.friendship.create({
+      data: {
+        userId: userId,
+        friendId: friendId,
+      },
+    });
+
+    return friendship;
+  }
+
+  async removeFriend(userId: number, friendId: number) {
+    const friendship = await this.prisma.friendship.delete({
+      where: {
+        userId_friendId: {
+          userId: userId,
+          friendId: friendId,
+        },
+      },
+    });
+
+    return friendship;
+  }
 }
