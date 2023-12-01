@@ -31,26 +31,50 @@ export class UserService {
   }
 
   async addFriend(userId: number, friendId: number) {
-    const friendship = await this.prisma.friendship.create({
-      data: {
-        userId: userId,
-        friendId: friendId,
-      },
-    });
-
-    return friendship;
-  }
-
-  async removeFriend(userId: number, friendId: number) {
-    const friendship = await this.prisma.friendship.delete({
+    const user = await this.prisma.user.update({
       where: {
-        userId_friendId: {
-          userId: userId,
-          friendId: friendId,
+        id: userId,
+      },
+      data: {
+        friends: {
+          connect: {
+            id: friendId,
+          },
         },
       },
     });
 
-    return friendship;
+    return user;
+  }
+
+  async removeFriend(userId: number, friendId: number) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        friends: {
+          disconnect: {
+            id: friendId,
+          },
+        },
+      },
+    });
+
+    return user;
+  }
+
+  async getFriends(userId: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        friends: true,
+        friendsClone: true,
+      },
+    });
+
+    return user.friends.concat(user.friendsClone);
   }
 }

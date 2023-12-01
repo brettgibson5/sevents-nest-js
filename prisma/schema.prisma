@@ -10,50 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   email     String  @unique
-//   hash      String
-//   firstName String?
-//   lastName  String?
-
-//   userEvents UserEvent[]
-
-//   @@map("users")
-// }
-
-// model Event {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   title       String
-//   description String?
-//   link        String?
-//   UserEvent   UserEvent[]
-
-//   @@map("events")
-// }
-
-// model UserEvent {
-//   id        Int      @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   attending Boolean
-
-//   eventId Int
-//   event   Event @relation(fields: [eventId], references: [id])
-
-//   userId Int
-//   user   User @relation(fields: [userId], references: [id])
-
-//   @@map("rsvp")
-// }
-
 model User {
   id        Int      @id @default(autoincrement())
   username  String?  @unique @default(uuid())
@@ -72,7 +28,8 @@ model User {
   UserCity  UserCity[]
   UserPhoto UserPhoto[]
 
-  friendships Friendship[] @relation("UserFriendships")
+  friends      User[] @relation("UserFriends")
+  friendsClone User[] @relation("UserFriends")
 
   @@map("users")
 }
@@ -176,13 +133,4 @@ model CityPhoto {
   photoId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model Friendship {
-  userId   Int  @map("user_id")
-  friendId Int  @map("friend_id")
-  User     User @relation("UserFriendships", fields: [userId], references: [id])
-
-  @@id([userId, friendId])
-  @@map("friendships")
 }

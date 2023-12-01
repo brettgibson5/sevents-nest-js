@@ -44,7 +44,8 @@ export class UserController {
     return this.userService.removeFriend(userId, friendId);
   }
 
-  // see all users
-
-  // see all friends
+  @Get(':userId/friends')
+  getAllFriends(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userService.getFriends(userId);
+  }
 }
