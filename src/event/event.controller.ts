@@ -11,16 +11,14 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { JwtGuard } from '../auth/guard';
 import { EventService } from './event.service';
-import { GetUser } from '../auth/decorator';
+import { GetUser } from '../auth/decorators';
 import { CreateEventDto, EditEventDto } from './dto';
 import { CreateRsvpDto } from 'src/shared/dto/create-rsvp.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/enum/role.enum';
 import { UserEventService } from 'src/shared/services/user-event.service';
 
-@UseGuards(JwtGuard)
 @Controller('events')
 export class EventController {
   constructor(

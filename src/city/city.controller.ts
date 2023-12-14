@@ -11,14 +11,14 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { JwtGuard, RoleGuard } from '../auth/guard';
+import { RoleGuard } from '../auth/guards';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { EditCityDto } from './dto/edit-city.dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/enum/role.enum';
 
-@UseGuards(JwtGuard, RoleGuard)
+@UseGuards(RoleGuard)
 @Controller('cities')
 export class CityController {
   constructor(private cityService: CityService) {}
