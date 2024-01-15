@@ -18,9 +18,19 @@ export class CityService {
     });
   }
 
+  getCityBySlug(citySlug: string) {
+    return this.prisma.city.findFirst({
+      where: {
+        slug: citySlug,
+      },
+    });
+  }
+
   async createCity(dto: CreateCityDto) {
+    const slug = dto.title.toLowerCase().split(' ').join('-');
+
     const city = await this.prisma.city.create({
-      data: { ...dto },
+      data: { ...dto, slug },
     });
 
     return city;

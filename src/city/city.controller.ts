@@ -34,9 +34,9 @@ export class CityController {
     return this.cityService.getCities();
   }
 
-  @Get(':id')
-  getCityById(@Param('id', ParseIntPipe) cityId: number) {
-    return this.cityService.getCityById(cityId);
+  @Get(':slug')
+  getCityBySlug(@Param('slug') citySlug: string) {
+    return this.cityService.getCityBySlug(citySlug);
   }
 
   @Roles(Role.Admin)
