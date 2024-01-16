@@ -26,7 +26,7 @@ export class AuthService {
     });
 
     const tokens = await this.getTokens(newUser.id, newUser.email);
-    await this.updateRtHash(newUser.id, tokens.refresh_token);
+    await this.updateRtHash(newUser.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -41,7 +41,7 @@ export class AuthService {
     const passwordMatches = await bcrypt.compare(dto.password, user.hash);
     if (!passwordMatches) throw new ForbiddenException('Access Denied');
     const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRtHash(user.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -71,7 +71,7 @@ export class AuthService {
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
     const tokens = await this.getTokens(user.id, user.email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
+    await this.updateRtHash(user.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -103,8 +103,8 @@ export class AuthService {
       ),
     ]);
     return {
-      access_token: at,
-      refresh_token: rt,
+      accessToken: at,
+      refreshToken: rt,
     };
   }
 
@@ -119,63 +119,4 @@ export class AuthService {
       },
     });
   }
-
-  // async signup(dto: AuthDto) {
-  //   const hash = await argon.hash(dto.password);
-  //   try {
-  //     const user = await this.prisma.user.create({
-  //       data: {
-  //         email: dto.email,
-  //         hash,
-  //         role: Role.User,
-  //       },
-  //     });
-  //     return this.signToken(user.id, user.email);
-  //   } catch (error) {
-  //     if (error instanceof PrismaClientKnownRequestError) {
-  //       if (error.code === 'P2002') {
-  //         throw new ForbiddenException('Credentials taken');
-  //       }
-  //     }
-  //     throw error;
-  //   }
-  // }
-
-  // async signin(dto: AuthDto) {
-  //   // find user by email
-  //   const user = await this.prisma.user.findUnique({
-  //     where: {
-  //       email: dto.email,
-  //     },
-  //   });
-  //   // if user does not exist throw exception
-  //   if (!user) throw new ForbiddenException('Credentials incorrect');
-  //   // compare password
-  //   const pwMatches = await argon.verify(user.hash, dto.password);
-  //   // if password incorrect throw exception
-  //   if (!pwMatches) {
-  //     throw new ForbiddenException('Credentials incorrect');
-  //   }
-  //   return this.signToken(user.id, user.email);
-  // }
-
-  // async signToken(
-  //   userId: number,
-  //   email: string,
-  // ): Promise<{ access_token: string }> {
-  //   const payload = {
-  //     sub: userId,
-  //     email,
-  //   };
-  //   const secret = this.config.get('JWT_SECRET');
-
-  //   const token = await this.jwt.signAsync(payload, {
-  //     expiresIn: '60m',
-  //     secret: secret,
-  //   });
-
-  //   return {
-  //     access_token: token,
-  //   };
-  // }
 }
